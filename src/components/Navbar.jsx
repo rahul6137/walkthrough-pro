@@ -5,13 +5,10 @@ function Navbar() {
 
   return (
     <nav className="bg-[#dde8ed] px-8 py-4 flex items-center justify-between">
-      
-      {/* Left - Logo */}
-      <Link to="/" className="flex items-center gap-2">
-        <span className="text-2xl">🚀</span>
-        <span className="font-bold text-blue-900 text-xl">
-          Walkthrough<span className="text-blue-500">Pro</span>
-        </span>
+
+      {/* Left - Logo Image */}
+      <Link to="/">
+        <img src="/logo.png" alt="WalkthroughPro" className="h-10" />
       </Link>
 
       {/* Center - Nav Links */}
@@ -32,9 +29,12 @@ function Navbar() {
 
       {/* Right - Profile & Logout */}
       <div className="flex items-center gap-2">
-        <button className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center text-gray-600 hover:bg-gray-100">
-          👤
+        {/* Profile Image */}
+        <button className="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
+          <img src="/profile.png" alt="Profile" className="w-full h-full object-cover" 
+            onError={(e) => { e.target.style.display='none' }} />
         </button>
+        {/* Logout Button */}
         <button className="w-10 h-10 rounded-full border border-red-200 bg-white flex items-center justify-center text-red-500 hover:bg-red-50">
           🚪
         </button>
