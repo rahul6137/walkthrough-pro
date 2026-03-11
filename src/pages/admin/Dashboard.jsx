@@ -1,18 +1,18 @@
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { VictoryBar, VictoryLine, VictoryChart, VictoryAxis, VictoryTheme, VictoryTooltip } from 'victory'
 import AdminLayout from './AdminLayout'
 
 const monthlyData = [
-  { month: 'Sep', obs: 45 }, { month: 'Oct', obs: 55 },
-  { month: 'Nov', obs: 48 }, { month: 'Dec', obs: 38 },
-  { month: 'Jan', obs: 52 }, { month: 'Feb', obs: 62 },
-  { month: 'Mar', obs: 22 },
+  { x: 'Sep', y: 45 }, { x: 'Oct', y: 55 },
+  { x: 'Nov', y: 48 }, { x: 'Dec', y: 38 },
+  { x: 'Jan', y: 52 }, { x: 'Feb', y: 62 },
+  { x: 'Mar', y: 22 },
 ]
 
 const scoreData = [
-  { month: 'Sep', score: 3.0 }, { month: 'Oct', score: 3.1 },
-  { month: 'Nov', score: 3.15 }, { month: 'Dec', score: 3.2 },
-  { month: 'Jan', score: 3.25 }, { month: 'Feb', score: 3.3 },
-  { month: 'Mar', score: 3.35 },
+  { x: 'Sep', y: 3.0 }, { x: 'Oct', y: 3.1 },
+  { x: 'Nov', y: 3.15 }, { x: 'Dec', y: 3.2 },
+  { x: 'Jan', y: 3.25 }, { x: 'Feb', y: 3.3 },
+  { x: 'Mar', y: 3.35 },
 ]
 
 const topTeachers = [
@@ -31,8 +31,6 @@ const recentObs = [
 function Dashboard() {
   return (
     <AdminLayout title="Admin Dashboard" subtitle="Overview of teacher performance and observations">
-      <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-      <p className="text-gray-500 mb-6">Overview of teacher performance and observations</p>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-4 mb-6">
@@ -42,7 +40,7 @@ function Dashboard() {
           { icon: '📊', label: 'Avg Performance', value: '3.3', sub: '+0.2 from last year', subColor: 'text-green-500' },
           { icon: '⭐', label: 'Distinguished', value: '12', sub: 'Teachers (≥3.5)', subColor: 'text-gray-400' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
+          <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xl">{stat.icon}</span>
               <span className="text-sm text-gray-500">{stat.label}</span>
@@ -55,35 +53,27 @@ function Dashboard() {
 
       {/* Charts */}
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="font-semibold text-gray-700 mb-4">Monthly Observations</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} />
-              <YAxis axisLine={false} tickLine={false} />
-              <Tooltip />
-              <Bar dataKey="obs" fill="#4B8BF5" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 className="font-semibold text-gray-700 mb-2">Monthly Observations</h3>
+          <VictoryChart theme={VictoryTheme.clean} height={220} padding={{ top: 10, bottom: 40, left: 40, right: 20 }}>
+            <VictoryAxis style={{ tickLabels: { fontSize: 10 } }} />
+            <VictoryAxis dependentAxis style={{ tickLabels: { fontSize: 10 } }} />
+            <VictoryBar data={monthlyData} style={{ data: { fill: '#4B8BF5', borderRadius: 4 } }} labelComponent={<VictoryTooltip />} />
+          </VictoryChart>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="font-semibold text-gray-700 mb-4">Average Score Trend</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={scoreData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} />
-              <YAxis domain={[0, 4]} axisLine={false} tickLine={false} />
-              <Tooltip />
-              <Line type="monotone" dataKey="score" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 className="font-semibold text-gray-700 mb-2">Average Score Trend</h3>
+          <VictoryChart theme={VictoryTheme.clean} height={220} padding={{ top: 10, bottom: 40, left: 40, right: 20 }}>
+            <VictoryAxis style={{ tickLabels: { fontSize: 10 } }} />
+            <VictoryAxis dependentAxis domain={[0, 4]} style={{ tickLabels: { fontSize: 10 } }} />
+            <VictoryLine data={scoreData} style={{ data: { stroke: '#10b981', strokeWidth: 2 } }} />
+          </VictoryChart>
         </div>
       </div>
 
       {/* Top Performing Teachers */}
-      <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
         <h3 className="font-semibold text-gray-700 mb-4">Top Performing Teachers</h3>
         {topTeachers.map((t) => (
           <div key={t.rank} className="flex items-center justify-between py-3 border-b last:border-0">
@@ -102,7 +92,7 @@ function Dashboard() {
       </div>
 
       {/* Recent Observations */}
-      <div className="bg-white rounded-xl p-6 shadow-sm">
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <h3 className="font-semibold text-gray-700 mb-4">Recent Observations</h3>
         {recentObs.map((o, i) => (
           <div key={i} className="flex items-center justify-between py-3 border rounded-lg px-4 mb-2">
@@ -115,6 +105,7 @@ function Dashboard() {
           </div>
         ))}
       </div>
+
     </AdminLayout>
   )
 }
