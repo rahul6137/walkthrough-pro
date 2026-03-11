@@ -8,7 +8,7 @@ function Navbar() {
 
       {/* Left - Logo Image */}
       <Link to="/">
-        <img src="/logo.png" alt="WalkthroughPro" className="h-10" />
+        <img src="/Logo.svg" alt="WalkthroughPro" className="h-20" />
       </Link>
 
       {/* Center - Nav Links */}
@@ -31,13 +31,15 @@ function Navbar() {
       <div className="flex items-center gap-2">
         {/* Profile Image */}
         <button className="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
-          <img src="/profile.png" alt="Profile" className="w-full h-full object-cover" 
+          <img src="/Profile.svg" alt="Profile" className="w-full h-full object-cover" 
+            onError={(e) => { e.target.style.display='none' }} />
+        </button>
+        <button className="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
+          <img src="/Logout.svg" alt="Logout" className="w-full h-full object-cover" 
             onError={(e) => { e.target.style.display='none' }} />
         </button>
         {/* Logout Button */}
-        <button className="w-10 h-10 rounded-full border border-red-200 bg-white flex items-center justify-center text-red-500 hover:bg-red-50">
-          🚪
-        </button>
+
       </div>
 
     </nav>
