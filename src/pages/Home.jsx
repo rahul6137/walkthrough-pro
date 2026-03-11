@@ -55,7 +55,7 @@ function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="bg-blue-50 py-16 px-6 text-center">
+      <section id="how-it-works" className="bg-blue-50 py-16 px-6 text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-2">How It Works</h2>
         <p className="text-gray-500 mb-10">Four simple steps to better teaching outcomes</p>
         <div className="max-w-2xl mx-auto text-left space-y-6">

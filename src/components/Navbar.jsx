@@ -16,13 +16,13 @@ function Navbar() {
         <Link to="/" className={`px-4 py-1 rounded-full text-sm font-medium ${location.pathname === '/' ? 'font-bold text-gray-800' : 'text-gray-500 hover:text-gray-800'}`}>
           Home
         </Link>
-        <Link to="/pricing" className={`px-4 py-1 rounded-full text-sm font-medium ${location.pathname === '/pricing' ? 'font-bold text-gray-800' : 'text-gray-500 hover:text-gray-800'}`}>
+        <Link to="/pricing" className={`px-4 py-1 rounded-full text-sm font-medium ${location.pathname === '/pricing' ? 'text-gray-800' : 'text-gray-500 hover:text-gray-800'}`}>
           Pricing
         </Link>
-        <Link to="/" className="px-4 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-800">
-          How it works
-        </Link>
-        <Link to="/login" className={`px-4 py-1 rounded-full text-sm font-bold ${location.pathname === '/login' ? 'text-blue-900' : 'text-gray-500 hover:text-gray-800'}`}>
+        <a href="/#how-it-works" className="px-4 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-800">
+  How it works
+</a>
+        <Link to="/login" className={`px-4 py-1 rounded-full text-sm font-medium ${location.pathname === '/login' ? 'text-gray-800' : 'text-gray-500 hover:text-gray-800'}`}>
           Login
         </Link>
       </div>
