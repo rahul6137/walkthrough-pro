@@ -1,3 +1,4 @@
+import { Users, Eye, TrendingUp, Star } from 'lucide-react'
 import { VictoryBar, VictoryLine, VictoryChart, VictoryAxis, VictoryTheme, VictoryTooltip } from 'victory'
 import AdminLayout from './AdminLayout'
 
@@ -28,40 +29,42 @@ const recentObs = [
   { name: 'Jennifer Martinez', subject: 'English', observer: 'Ms. Williams', date: 'March 3, 2026', score: 3.6 },
 ]
 
+const stats = [
+  { icon: Users, label: 'Total Teachers', value: '48', sub: '+3 this month', subColor: 'text-green-500' },
+  { icon: Eye, label: 'Total Observations', value: '323', sub: 'This school year', subColor: 'text-gray-400' },
+  { icon: TrendingUp, label: 'Avg Performance', value: '3.3', sub: '+0.2 from last year', subColor: 'text-green-500' },
+  { icon: Star, label: 'Distinguished', value: '12', sub: 'Teachers (≥3.5)', subColor: 'text-gray-400' },
+]
+
 function Dashboard() {
   return (
     <AdminLayout title="Admin Dashboard" subtitle="Overview of teacher performance and observations">
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        {[
-          { icon: '👥', label: 'Total Teachers', value: '48', sub: '+3 this month', subColor: 'text-green-500' },
-          { icon: '👁️', label: 'Total Observations', value: '323', sub: 'This school year', subColor: 'text-gray-400' },
-          { icon: '📊', label: 'Avg Performance', value: '3.3', sub: '+0.2 from last year', subColor: 'text-green-500' },
-          { icon: '⭐', label: 'Distinguished', value: '12', sub: 'Teachers (≥3.5)', subColor: 'text-gray-400' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">{stat.icon}</span>
-              <span className="text-sm text-gray-500">{stat.label}</span>
+        {stats.map((stat, i) => {
+          const Icon = stat.icon
+          return (
+            <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Icon size={18} className="text-blue-900" strokeWidth={1.5} />
+                <span className="text-sm text-gray-500">{stat.label}</span>
+              </div>
+              <div className="text-3xl font-bold text-gray-800 mb-1">{stat.value}</div>
+              <div className={`text-xs ${stat.subColor}`}>{stat.sub}</div>
             </div>
-            <div className="text-3xl font-bold text-gray-800 mb-1">{stat.value}</div>
-            <div className={`text-xs ${stat.subColor}`}>{stat.sub}</div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <h3 className="font-semibold text-gray-700 mb-2">Monthly Observations</h3>
           <VictoryChart theme={VictoryTheme.clean} height={220} padding={{ top: 10, bottom: 40, left: 40, right: 20 }}>
             <VictoryAxis style={{ tickLabels: { fontSize: 10 } }} />
             <VictoryAxis dependentAxis style={{ tickLabels: { fontSize: 10 } }} />
-            <VictoryBar data={monthlyData} style={{ data: { fill: '#4B8BF5', borderRadius: 4 } }} labelComponent={<VictoryTooltip />} />
+            <VictoryBar data={monthlyData} style={{ data: { fill: '#4B8BF5' } }} labelComponent={<VictoryTooltip />} />
           </VictoryChart>
         </div>
-
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <h3 className="font-semibold text-gray-700 mb-2">Average Score Trend</h3>
           <VictoryChart theme={VictoryTheme.clean} height={220} padding={{ top: 10, bottom: 40, left: 40, right: 20 }}>
@@ -72,7 +75,6 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Top Performing Teachers */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
         <h3 className="font-semibold text-gray-700 mb-4">Top Performing Teachers</h3>
         {topTeachers.map((t) => (
@@ -91,7 +93,6 @@ function Dashboard() {
         ))}
       </div>
 
-      {/* Recent Observations */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <h3 className="font-semibold text-gray-700 mb-4">Recent Observations</h3>
         {recentObs.map((o, i) => (

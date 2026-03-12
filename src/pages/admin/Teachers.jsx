@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Search } from 'lucide-react'
 import AdminLayout from './AdminLayout'
 
 const teachers = [
@@ -18,19 +19,14 @@ function scoreColor(score) {
 
 function Teachers() {
   const [search, setSearch] = useState('')
-
-  const filtered = teachers.filter(t =>
-    t.name.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = teachers.filter(t => t.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <AdminLayout title="Teachers" subtitle="6 total teachers">
-      <h1 className="text-3xl font-bold text-gray-800">Teachers</h1>
-      <p className="text-gray-500 mb-6">6 total teachers</p>
 
       <div className="flex gap-3 mb-4">
         <div className="flex-1 flex items-center bg-white border rounded-lg px-4 py-2 gap-2">
-          <span className="text-gray-400">🔍</span>
+          <Search size={16} className="text-gray-400" />
           <input className="flex-1 outline-none text-sm" placeholder="Search teachers..."
             value={search} onChange={e => setSearch(e.target.value)} />
         </div>
@@ -78,8 +74,8 @@ function Teachers() {
         {[
           { value: '48', label: 'Total Teachers', color: 'text-gray-800' },
           { value: '3.3', label: 'Overall Avg Score', color: 'text-blue-500' },
-          { value: '48', label: 'Distinguished (≥3.5)', color: 'text-green-500' },
-          { value: '48', label: 'Needs Support (<2.5)', color: 'text-orange-500' },
+          { value: '12', label: 'Distinguished (≥3.5)', color: 'text-green-500' },
+          { value: '2', label: 'Needs Support (<2.5)', color: 'text-orange-500' },
         ].map((s, i) => (
           <div key={i} className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className={`text-3xl font-bold mb-1 ${s.color}`}>{s.value}</div>

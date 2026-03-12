@@ -1,9 +1,10 @@
+import { Download } from 'lucide-react'
 import AdminLayout from './AdminLayout'
 
 const invoices = [
   { id: 'INV-2026-003', date: 'March 15, 2026', amount: '$2870' },
   { id: 'INV-2025-003', date: 'March 15, 2025', amount: '$2870' },
-  { id: 'INV-2026-003', date: 'March 15, 2026', amount: '$2870' },
+  { id: 'INV-2026-002', date: 'February 15, 2026', amount: '$2870' },
 ]
 
 function ProgressBar({ value, max, color }) {
@@ -16,9 +17,7 @@ function ProgressBar({ value, max, color }) {
 
 function Subscription() {
   return (
-    <AdminLayout title="Subscription & Billing" subtitle="5 observations this month">
-      <h1 className="text-3xl font-bold text-gray-800">Subscription & Billing</h1>
-      <p className="text-gray-500 mb-6">5 observations this month</p>
+    <AdminLayout title="Subscription & Billing" subtitle="Manage your plan and billing">
 
       <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
         <h3 className="font-semibold text-gray-700 mb-4">Current Usage</h3>
@@ -50,7 +49,9 @@ function Subscription() {
             <div className="flex items-center gap-3">
               <span className="font-bold text-gray-800">{inv.amount}</span>
               <span className="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full font-medium">Paid</span>
-              <button className="text-gray-400 hover:text-gray-600">⬇️</button>
+              <button className="text-gray-400 hover:text-gray-600">
+                <Download size={16} />
+              </button>
             </div>
           </div>
         ))}

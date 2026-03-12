@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Search, Eye } from 'lucide-react'
 import AdminLayout from './AdminLayout'
 
 const reports = [
@@ -20,12 +21,10 @@ function ObservationReports() {
 
   return (
     <AdminLayout title="Observation Reports" subtitle="5 observations this month">
-      <h1 className="text-3xl font-bold text-gray-800">Observation Reports</h1>
-      <p className="text-gray-500 mb-6">5 observations this month</p>
 
       <div className="flex gap-3 mb-4">
         <div className="flex-1 flex items-center bg-white border rounded-lg px-4 py-2 gap-2">
-          <span className="text-gray-400">🔍</span>
+          <Search size={16} className="text-gray-400" />
           <input className="flex-1 outline-none text-sm" placeholder="Search by teacher, observer, or subject..."
             value={search} onChange={e => setSearch(e.target.value)} />
         </div>
@@ -64,7 +63,7 @@ function ObservationReports() {
                 </td>
                 <td className="px-6 py-4">
                   <button className="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 rounded-lg text-xs flex items-center gap-1 hover:bg-gray-200">
-                    👁️ View
+                    <Eye size={12} /> View
                   </button>
                 </td>
               </tr>
