@@ -53,7 +53,7 @@ function StartObservation() {
             value={form.time} onChange={e => setForm({ ...form, time: e.target.value })} />
         </div>
 
-        <button onClick={() => navigate('/observer/form')}
+        <button onClick={() => navigate('/observer/form', { state: form })}
           className="w-full bg-blue-900 text-white py-3 rounded-xl font-semibold hover:bg-blue-800">
           Continue to Observation Form
         </button>

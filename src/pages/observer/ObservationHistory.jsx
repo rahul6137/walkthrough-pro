@@ -1,15 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, Filter, ChevronRight } from 'lucide-react'
 import ObserverLayout from './ObserverLayout'
-
-const observations = [
-  { name: 'Sarah Thompson', subject: 'Mathematics', observer: 'Dr. Johnson', date: 'March 5, 2026', score: 3.4 },
-  { name: 'Michael Chen', subject: 'Science', observer: 'Dr. Johnson', date: 'March 4, 2026', score: 3.1 },
-  { name: 'Jennifer Martinez', subject: 'English', observer: 'Ms. Williams', date: 'March 3, 2026', score: 3.6 },
-  { name: 'Sarah Thompson', subject: 'Mathematics', observer: 'Ms. Williams', date: 'February 28, 2026', score: 3.2 },
-  { name: 'Robert Davis', subject: 'History', observer: 'Dr. Johnson', date: 'February 25, 2026', score: 2.9 },
-  { name: 'Emily Rodriguez', subject: 'Science', observer: 'Ms. Williams', date: 'February 20, 2026', score: 3.5 },
-]
 
 function barColor(score) {
   if (score >= 3.5) return 'bg-blue-900'
@@ -22,15 +13,39 @@ function scoreColor(score) {
 }
 
 function ObservationHistory() {
+  const [observations, setObservations] = useState([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [subject, setSubject] = useState('All Subject')
 
+  useEffect(() => {
+    const fetchObservations = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/observations`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+        setObservations(data)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchObservations()
+  }, [])
+
   const filtered = observations.filter(o =>
-    o.name.toLowerCase().includes(search.toLowerCase()) &&
+    o.teacher_name?.toLowerCase().includes(search.toLowerCase()) &&
     (subject === 'All Subject' || o.subject === subject)
   )
 
-  const avg = (observations.reduce((s, o) => s + o.score, 0) / observations.length).toFixed(1)
+  const avg = observations.length > 0
+    ? (observations.reduce((s, o) => s + parseFloat(o.avg_score || 0), 0) / observations.length).toFixed(1)
+    : '0.0'
+
+  const subjects = [...new Set(observations.map(o => o.subject).filter(Boolean))]
 
   return (
     <ObserverLayout title="Observation History" subtitle={`${observations.length} total observations`}>
@@ -40,7 +55,7 @@ function ObservationHistory() {
         <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-2 border border-gray-100 shadow-sm">
           <Search size={16} className="text-gray-400" />
           <input className="flex-1 outline-none text-sm text-gray-700"
-            placeholder="Search by teacher or observer..."
+            placeholder="Search by teacher name..."
             value={search} onChange={e => setSearch(e.target.value)} />
         </div>
 
@@ -49,33 +64,42 @@ function ObservationHistory() {
           <select className="flex-1 outline-none text-sm text-gray-700 bg-transparent"
             value={subject} onChange={e => setSubject(e.target.value)}>
             <option>All Subject</option>
-            <option>Mathematics</option>
-            <option>Science</option>
-            <option>English</option>
-            <option>History</option>
+            {subjects.map(s => <option key={s}>{s}</option>)}
           </select>
         </div>
 
-        {filtered.map((o, i) => (
-          <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <div className="font-semibold text-blue-900">{o.name}</div>
-                <div className="text-sm text-gray-500">{o.subject} • {o.observer}</div>
-                <div className="text-xs text-gray-400">{o.date}</div>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className={`text-2xl font-bold ${scoreColor(o.score)}`}>{o.score}</span>
-                <span className="text-xs text-gray-400 mt-2">/ 4.0</span>
-                <ChevronRight size={16} className="text-gray-400 mt-1" />
-              </div>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-2">
-              <div className={`h-2 rounded-full ${barColor(o.score)}`}
-                style={{ width: `${(o.score / 4) * 100}%` }}></div>
-            </div>
+        {loading ? (
+          <div className="bg-white rounded-xl p-8 text-center text-gray-400">Loading...</div>
+        ) : filtered.length === 0 ? (
+          <div className="bg-white rounded-xl p-8 text-center text-gray-400">
+            No observations yet. Start your first observation!
           </div>
-        ))}
+        ) : (
+          filtered.map((o, i) => (
+            <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <div className="font-semibold text-blue-900">{o.teacher_name}</div>
+                  <div className="text-sm text-gray-500">{o.subject}</div>
+                  <div className="text-xs text-gray-400">
+                    {o.obs_date ? new Date(o.obs_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={`text-2xl font-bold ${scoreColor(o.avg_score)}`}>
+                    {parseFloat(o.avg_score).toFixed(1)}
+                  </span>
+                  <span className="text-xs text-gray-400 mt-2">/ 4.0</span>
+                  <ChevronRight size={16} className="text-gray-400 mt-1" />
+                </div>
+              </div>
+              <div className="w-full bg-gray-100 rounded-full h-2">
+                <div className={`h-2 rounded-full ${barColor(o.avg_score)}`}
+                  style={{ width: `${(parseFloat(o.avg_score) / 4) * 100}%` }}></div>
+              </div>
+            </div>
+          ))
+        )}
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
           <h3 className="font-semibold text-gray-800 mb-4">Summary Statistics</h3>
