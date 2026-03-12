@@ -8,10 +8,10 @@ function ForgotPassword() {
       <div className="flex items-center justify-center py-24">
         <div className="bg-white rounded-2xl shadow p-10 w-full max-w-md">
           <div className="text-center mb-6">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="text-3xl">🚀</span>
-              <span className="font-bold text-blue-900 text-xl">Walkthrough<span className="text-blue-500">Pro</span></span>
-            </div>
+            <div className="flex items-center justify-center mb-4">
+  <img src="/Logo.svg" alt="WalkthroughPro" className="h-20"
+    onError={(e) => { e.target.style.display = 'none' }} />
+</div>
             <h2 className="text-2xl font-bold text-blue-900">Forgot Password?</h2>
             <p className="text-gray-500 text-sm mt-1">Enter your email and we'll send you a reset link</p>
           </div>

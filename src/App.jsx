@@ -9,6 +9,14 @@ import Teachers from './pages/admin/Teachers'
 import ObservationReports from './pages/admin/ObservationReports'
 import DomainAnalytics from './pages/admin/DomainAnalytics'
 import Subscription from './pages/admin/Subscription'
+import ObserverDashboard from './pages/observer/ObserverDashboard'
+import StartObservation from './pages/observer/StartObservation'
+import ObservationForm from './pages/observer/ObservationForm'
+import AICoachingOutput from './pages/observer/AICoachingOutput'
+import ObservationHistory from './pages/observer/ObservationHistory'
+import Profile from './pages/observer/Profile'
+import EditProfile from './pages/observer/EditProfile'
+import ObserverSettings from './pages/observer/Settings'
 
 function App() {
   return (
@@ -24,6 +32,14 @@ function App() {
         <Route path="/admin/reports" element={<ObservationReports />} />
         <Route path="/admin/analytics" element={<DomainAnalytics />} />
         <Route path="/admin/subscription" element={<Subscription />} />
+        <Route path="/observer" element={<ObserverDashboard />} />
+<Route path="/observer/start" element={<StartObservation />} />
+<Route path="/observer/form" element={<ObservationForm />} />
+<Route path="/observer/ai-coaching" element={<AICoachingOutput />} />
+<Route path="/observer/history" element={<ObservationHistory />} />
+<Route path="/observer/profile" element={<Profile />} />
+<Route path="/observer/edit-profile" element={<EditProfile />} />
+<Route path="/observer/settings" element={<ObserverSettings />} />
       </Routes>
     </BrowserRouter>
   )
