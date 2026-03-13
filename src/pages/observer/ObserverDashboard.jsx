@@ -15,7 +15,12 @@ function ObserverDashboard() {
           headers: { Authorization: `Bearer ${token}` }
         })
         const data = await res.json()
-        setStats(data)
+        setStats({
+          total: data.total || 0,
+          avgScore: data.avgScore || '0.0',
+          teachers: data.teachers || 0,
+          recent: data.recent || []
+        })
       } catch (err) {
         console.error(err)
       } finally {
