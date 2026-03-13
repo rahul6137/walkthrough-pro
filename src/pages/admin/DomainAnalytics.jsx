@@ -1,104 +1,80 @@
+import { useState, useEffect } from 'react'
 import { VictoryBar, VictoryLine, VictoryChart, VictoryAxis, VictoryTheme, VictoryGroup, VictoryLegend } from 'victory'
 import AdminLayout from './AdminLayout'
 
-const radarData = [
-  { x: 'Respect', y: 3.2 },
-  { x: 'Culture', y: 3.4 },
-  { x: 'Procedures', y: 3.6 },
-  { x: 'Behavior', y: 3.3 },
-  { x: 'Communication', y: 3.1 },
-  { x: 'Questioning', y: 2.9 },
-]
-
-const domain2Data = [
-  { x: 'Sep', y: 3.2 }, { x: 'Oct', y: 3.4 },
-  { x: 'Nov', y: 3.5 }, { x: 'Dec', y: 3.4 },
-  { x: 'Jan', y: 3.7 }, { x: 'Feb', y: 3.5 },
-  { x: 'Mar', y: 3.8 },
-]
-
-const domain3Data = [
-  { x: 'Sep', y: 3.0 }, { x: 'Oct', y: 3.1 },
-  { x: 'Nov', y: 3.2 }, { x: 'Dec', y: 3.1 },
-  { x: 'Jan', y: 3.4 }, { x: 'Feb', y: 3.3 },
-  { x: 'Mar', y: 3.5 },
-]
-
 function DomainAnalytics() {
-  return (
-    <AdminLayout title="Domain Analytics" subtitle="5 observations this month">
+  const [observations, setObservations] = useState([])
+  const [loading, setLoading] = useState(true)
 
-      {/* Domain Score Cards */}
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/admin/observations`)
+      .then(r => r.json())
+      .then(data => { setObservations(Array.isArray(data) ? data : []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const avg = (key) => {
+    const vals = observations.map(o => {
+      try { return parseFloat(JSON.parse(o.domain2_scores || '{}')[key] || JSON.parse(o.domain3_scores || '{}')[key] || 0) }
+      catch { return 0 }
+    }).filter(v => v > 0)
+    return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2) : 0
+  }
+
+  const d2Keys = ['d2_1', 'd2_2', 'd2_3', 'd2_4', 'd2_5']
+  const d3Keys = ['d3_1', 'd3_2', 'd3_3']
+  const d2Labels = ['2.1 Expectations', '2.2 Content', '2.3 Communication', '2.4 Differentiation', '2.5 Monitor']
+  const d3Labels = ['3.1 Environment', '3.2 Behavior', '3.3 Culture']
+
+  const domain2BarData = d2Keys.map((k, i) => ({ x: d2Labels[i], y: parseFloat(avg(k)) }))
+  const domain3BarData = d3Keys.map((k, i) => ({ x: d3Labels[i], y: parseFloat(avg(k)) }))
+
+  const domain2Avg = domain2BarData.length ? (domain2BarData.reduce((a, b) => a + b.y, 0) / domain2BarData.length).toFixed(1) : '0.0'
+  const domain3Avg = domain3BarData.length ? (domain3BarData.reduce((a, b) => a + b.y, 0) / domain3BarData.length).toFixed(1) : '0.0'
+
+  return (
+    <AdminLayout title="Domain Analytics" subtitle={`${observations.length} observations total`}>
+
       <div className="grid grid-cols-2 gap-4 mb-6">
         {[
-          { title: 'Classroom Environment', score: '3.5', color: 'text-blue-600', highest: 'Classroom Procedures (3.6)', lowest: 'Student Behavior (3.3)' },
-          { title: 'Instruction', score: '3.2', color: 'text-green-500', highest: 'Communication (3.4)', lowest: 'Questioning (2.9)' },
+          { title: 'Domain 2 — Instruction', score: domain2Avg, color: 'text-green-500' },
+          { title: 'Domain 3 — Environment', score: domain3Avg, color: 'text-blue-600' },
         ].map((d, i) => (
           <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <h3 className="font-bold text-gray-800 mb-1">{d.title}</h3>
             <div className={`text-4xl font-bold ${d.color} mb-1`}>{d.score}</div>
-            <div className="text-sm text-gray-500 mb-3">Average Score</div>
-            <div className="flex justify-between text-sm text-gray-600 border-t pt-3">
-              <span>Highest:</span><span>{d.highest}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600 mt-1">
-              <span>Lowest:</span><span>{d.lowest}</span>
-            </div>
+            <div className="text-sm text-gray-500">Average Score</div>
           </div>
         ))}
       </div>
 
-      {/* Classroom Environment Bar Chart */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-        <h3 className="font-semibold text-gray-700 mb-2">Classroom Environment — Dimension Breakdown</h3>
-        <VictoryChart
-          theme={VictoryTheme.clean}
-          height={250}
-          padding={{ top: 10, bottom: 50, left: 50, right: 20 }}
-          domainPadding={{ x: 30 }}
-        >
-          <VictoryAxis style={{ tickLabels: { fontSize: 9, angle: -20 } }} />
-          <VictoryAxis dependentAxis domain={[0, 4]} style={{ tickLabels: { fontSize: 10 } }} />
-          <VictoryBar
-            data={radarData}
-            style={{ data: { fill: '#4B8BF5' } }}
-            cornerRadius={{ top: 4 }}
-          />
-        </VictoryChart>
-      </div>
+      {loading ? (
+        <div className="bg-white rounded-xl p-12 text-center text-gray-400">Loading...</div>
+      ) : observations.length === 0 ? (
+        <div className="bg-white rounded-xl p-12 text-center text-gray-400">No observations yet</div>
+      ) : (
+        <>
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <h3 className="font-semibold text-gray-700 mb-2">Domain 2 — Instruction Breakdown</h3>
+            <VictoryChart theme={VictoryTheme.clean} height={250}
+              padding={{ top: 10, bottom: 80, left: 50, right: 20 }} domainPadding={{ x: 30 }}>
+              <VictoryAxis style={{ tickLabels: { fontSize: 8, angle: -20 } }} />
+              <VictoryAxis dependentAxis domain={[0, 4]} style={{ tickLabels: { fontSize: 10 } }} />
+              <VictoryBar data={domain2BarData} style={{ data: { fill: '#22c55e' } }} cornerRadius={{ top: 4 }} />
+            </VictoryChart>
+          </div>
 
-      {/* Domain Comparison Line Chart */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 className="font-semibold text-gray-700 mb-2">Domain Comparison Over Time</h3>
-        <VictoryChart
-          theme={VictoryTheme.clean}
-          height={250}
-          padding={{ top: 20, bottom: 40, left: 50, right: 20 }}
-        >
-          <VictoryLegend
-            x={60} y={0}
-            orientation="horizontal"
-            data={[
-              { name: 'Domain 2', symbol: { fill: '#4B8BF5' } },
-              { name: 'Domain 3', symbol: { fill: '#22c55e' } },
-            ]}
-            style={{ labels: { fontSize: 10 } }}
-          />
-          <VictoryAxis style={{ tickLabels: { fontSize: 10 } }} />
-          <VictoryAxis dependentAxis domain={[0, 4]} style={{ tickLabels: { fontSize: 10 } }} />
-          <VictoryGroup>
-            <VictoryLine
-              data={domain2Data}
-              style={{ data: { stroke: '#4B8BF5', strokeWidth: 2 } }}
-            />
-            <VictoryLine
-              data={domain3Data}
-              style={{ data: { stroke: '#22c55e', strokeWidth: 2 } }}
-            />
-          </VictoryGroup>
-        </VictoryChart>
-      </div>
-
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="font-semibold text-gray-700 mb-2">Domain 3 — Environment Breakdown</h3>
+            <VictoryChart theme={VictoryTheme.clean} height={250}
+              padding={{ top: 10, bottom: 80, left: 50, right: 20 }} domainPadding={{ x: 30 }}>
+              <VictoryAxis style={{ tickLabels: { fontSize: 8, angle: -20 } }} />
+              <VictoryAxis dependentAxis domain={[0, 4]} style={{ tickLabels: { fontSize: 10 } }} />
+              <VictoryBar data={domain3BarData} style={{ data: { fill: '#4B8BF5' } }} cornerRadius={{ top: 4 }} />
+            </VictoryChart>
+          </div>
+        </>
+      )}
     </AdminLayout>
   )
 }
